@@ -22,11 +22,16 @@ func main() {
 	}
 	stream, err := client.Join(context.Background(), &me)
 
+	if err != nil {
+		log.Fatalf("Error when trying to join:\n%s", err)
+	}
+
 	for {
 		message, _ := stream.Recv()
 		if message == nil {
 			continue
 		}
+		fmt.Printf("%d - %s:\n", message.Count, message.Client)
 		fmt.Println(message.Text)
 
 	}
