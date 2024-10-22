@@ -54,6 +54,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
+			break
 		}
 		message := proto.Response{
 			Text:   text,

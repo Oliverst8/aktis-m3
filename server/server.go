@@ -7,7 +7,10 @@ import (
 	"google.golang.org/grpc"
 	proto "main/grpc"
 	"net"
+	"sync"
 )
+
+var lock sync.Mutex
 
 type ChittyChat struct {
 	proto.UnimplementedChittyChatServer
@@ -53,7 +56,7 @@ func (s *ChittyChat) Join(client *proto.Client, stream proto.ChittyChat_JoinServ
 		}
 		return errors.New("Test error")
 	}
-	s.streams[client.Name] = stream
+	s.setStream(client.Name, stream)
 	joinMessage := fmt.Sprintf("Participant %s joined Chitty-Chat at Lamport time %d", client.Name, 0)
 	message := proto.Response{
 		Text:   joinMessage,
@@ -64,14 +67,35 @@ func (s *ChittyChat) Join(client *proto.Client, stream proto.ChittyChat_JoinServ
 	if err != nil {
 		return err
 	}
-	for s.streams[client.Name] != nil {
+	for s.getStream(client.Name) != nil {
 	}
 	return nil
 }
 
 func (s *ChittyChat) Leave(ctx context.Context, client *proto.Client) (*proto.Empty, error) {
 
-	return &proto.Empty{}, errors.New("Can't leave")
+	stream := s.streams[client.Name]
+
+	youLeftMessage := proto.Response{
+		Text:   "You left",
+		Client: client.Name,
+		Count:  0,
+	}
+	broadcastMessage := proto.Response{
+		Text:   fmt.Sprintf("%s has left the chat.", client.Name),
+		Client: client.Name,
+		Count:  0,
+	}
+	err := s.SendMessage(&youLeftMessage, stream)
+	if err != nil {
+		return nil, err
+	}
+	err = s.Broadcast(&broadcastMessage)
+	if err != nil {
+		return nil, err
+	}
+	s.streams[client.Name] = nil
+	return &proto.Empty{}, nil
 }
 
 func (s *ChittyChat) PublishMessage(ctx context.Context, message *proto.Response) (*proto.Status, error) {
@@ -83,6 +107,7 @@ func (s *ChittyChat) PublishMessage(ctx context.Context, message *proto.Response
 }
 
 func (s *ChittyChat) Broadcast(message *proto.Response) error {
+	lock.Lock()
 	for name, stream := range s.streams {
 		if message.Client == name {
 			continue
@@ -92,6 +117,7 @@ func (s *ChittyChat) Broadcast(message *proto.Response) error {
 			panic(err)
 		}
 	}
+	lock.Unlock()
 	return nil
 }
 
@@ -101,4 +127,16 @@ func (s *ChittyChat) SendMessage(message *proto.Response, stream proto.ChittyCha
 		panic(err)
 	}
 	return nil
+}
+
+func (s *ChittyChat) getStream(name string) proto.ChittyChat_JoinServer {
+	lock.Lock()
+	defer lock.Unlock()
+	return s.streams[name]
+}
+
+func (s *ChittyChat) setStream(name string, stream proto.ChittyChat_JoinServer) {
+	lock.Lock()
+	defer lock.Unlock()
+	s.streams[name] = stream
 }
