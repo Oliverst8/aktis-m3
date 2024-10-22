@@ -67,6 +67,7 @@ func (s *ChittyChat) Join(client *proto.Client, stream proto.ChittyChat_JoinServ
 	if err != nil {
 		return err
 	}
+	fmt.Printf("%s has successfully joined the chat\n", client.Name)
 	for s.getStream(client.Name) != nil {
 	}
 	return nil
