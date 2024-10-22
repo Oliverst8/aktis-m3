@@ -141,3 +141,7 @@ func (s *ChittyChat) setStream(name string, stream proto.ChittyChat_JoinServer) 
 	defer lock.Unlock()
 	s.streams[name] = stream
 }
+
+func (me *ChittyChat) increaseClock() {
+	me.count++
+}
