@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"google.golang.org/grpc"
+	"log"
 	proto "main/grpc"
 	"net"
 	"sync"
+
+	"google.golang.org/grpc"
 )
 
 var lock sync.Mutex
@@ -44,7 +46,9 @@ func (s *ChittyChat) start_server() {
 }
 
 func (s *ChittyChat) Join(client *proto.Client, stream proto.ChittyChat_JoinServer) error {
-	fmt.Printf("%s is trying to join\n", client.Name)
+	s.updateClockToClient(*client)
+	s.increaseClock()
+	fmt.Printf("%s is trying to join at Lamport time %d \n", client.Name, s.count)
 	if s.streams[client.Name] != nil {
 		fmt.Printf("user with name %s already exists", client.Name)
 		response := proto.Response{
@@ -57,7 +61,7 @@ func (s *ChittyChat) Join(client *proto.Client, stream proto.ChittyChat_JoinServ
 		return errors.New("Test error")
 	}
 	s.setStream(client.Name, stream)
-	joinMessage := fmt.Sprintf("Participant %s joined Chitty-Chat at Lamport time %d", client.Name, 0)
+	joinMessage := fmt.Sprintf("Participant %s joined Chitty-Chat at Lamport time %d", client.Name, s.count)
 	message := proto.Response{
 		Text:   joinMessage,
 		Client: client.Name,
@@ -77,15 +81,18 @@ func (s *ChittyChat) Leave(ctx context.Context, client *proto.Client) (*proto.Em
 
 	stream := s.streams[client.Name]
 
+	s.updateClockToClient(*client)
+	s.increaseClock()
+
 	youLeftMessage := proto.Response{
 		Text:   "You left",
 		Client: client.Name,
-		Count:  0,
+		Count:  s.count,
 	}
 	broadcastMessage := proto.Response{
 		Text:   fmt.Sprintf("%s has left the chat.", client.Name),
 		Client: client.Name,
-		Count:  0,
+		Count:  s.count,
 	}
 	err := s.SendMessage(&youLeftMessage, stream)
 	if err != nil {
@@ -100,7 +107,9 @@ func (s *ChittyChat) Leave(ctx context.Context, client *proto.Client) (*proto.Em
 }
 
 func (s *ChittyChat) PublishMessage(ctx context.Context, message *proto.Response) (*proto.Status, error) {
+	s.updateClockToResponse(*message)
 	err := s.Broadcast(message)
+	log.Printf("User %s publishes message %s at Lamport time %d", message.Client, message.Text, message.Count)
 	if err != nil {
 		return &proto.Status{Success: false}, err
 	}
@@ -140,6 +149,18 @@ func (s *ChittyChat) setStream(name string, stream proto.ChittyChat_JoinServer) 
 	lock.Lock()
 	defer lock.Unlock()
 	s.streams[name] = stream
+}
+
+func (me *ChittyChat) updateClockToResponse(reponse proto.Response) {
+	if me.count < reponse.Count {
+		me.count = reponse.Count
+	}
+}
+
+func (me *ChittyChat) updateClockToClient(client proto.Client) {
+	if me.count < client.Count {
+		me.count = client.Count
+	}
 }
 
 func (me *ChittyChat) increaseClock() {
