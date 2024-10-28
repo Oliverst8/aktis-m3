@@ -38,19 +38,18 @@ func (s *ChittyChat) start_server() {
 
 	proto.RegisterChittyChatServer(grpcServer, s)
 
+	fmt.Printf("Now listening on localhost%s\n", port)
 	err = grpcServer.Serve(listener)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Now listening on localhost%s", port)
 }
 
 func (s *ChittyChat) Join(client *proto.Client, stream proto.ChittyChat_JoinServer) error {
-	s.updateClockToClient(*client)
+	s.updateClock(client.Count)
 	s.increaseClock()
-	fmt.Printf("%s is trying to join at Lamport time %d \n", client.Name, s.count)
+	log.Printf("%s is trying to join at Lamport time %d \n", client.Name, s.count)
 	if s.streams[client.Name] != nil {
-		fmt.Printf("user with name %s already exists", client.Name)
 		response := proto.Response{
 			Err: fmt.Sprintf("user with name \"%s\" already exists", client.Name),
 		}
@@ -58,20 +57,20 @@ func (s *ChittyChat) Join(client *proto.Client, stream proto.ChittyChat_JoinServ
 		if err != nil {
 			return err
 		}
-		return errors.New("Test error")
+		return errors.New("test error")
 	}
 	s.setStream(client.Name, stream)
 	joinMessage := fmt.Sprintf("Participant %s joined Chitty-Chat at Lamport time %d", client.Name, s.count)
 	message := proto.Response{
 		Text:   joinMessage,
 		Client: client.Name,
-		Count:  client.Count,
+		Count:  s.count,
 	}
 	err := s.Broadcast(&message)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%s has successfully joined the chat\n", client.Name)
+	log.Printf("%s has successfully joined the chat\n", client.Name)
 	for s.getStream(client.Name) != nil {
 	}
 	return nil
@@ -81,7 +80,7 @@ func (s *ChittyChat) Leave(ctx context.Context, client *proto.Client) (*proto.Em
 
 	stream := s.streams[client.Name]
 
-	s.updateClockToClient(*client)
+	s.updateClock(client.Count)
 	s.increaseClock()
 
 	youLeftMessage := proto.Response{
@@ -107,9 +106,10 @@ func (s *ChittyChat) Leave(ctx context.Context, client *proto.Client) (*proto.Em
 }
 
 func (s *ChittyChat) PublishMessage(ctx context.Context, message *proto.Response) (*proto.Status, error) {
-	s.updateClockToResponse(*message)
+	s.updateClock(message.Count)
+
+	log.Printf("User %s publishes message \"%s\" at client Lamport time: %d, received at server lamport time: %d", message.Client, message.Text, message.Count, s.count)
 	err := s.Broadcast(message)
-	log.Printf("User %s publishes message %s at Lamport time %d", message.Client, message.Text, message.Count)
 	if err != nil {
 		return &proto.Status{Success: false}, err
 	}
@@ -117,12 +117,14 @@ func (s *ChittyChat) PublishMessage(ctx context.Context, message *proto.Response
 }
 
 func (s *ChittyChat) Broadcast(message *proto.Response) error {
+	s.increaseClock()
+	log.Printf("Broadcasting message at Lamport time %d: %s", s.count, message.Text)
 	lock.Lock()
-	for name, stream := range s.streams {
-		if message.Client == name {
+	for _, stream := range s.streams {
+		if stream == nil {
 			continue
 		}
-		err := stream.Send(message)
+		err := s.SendMessage(message, stream)
 		if err != nil {
 			panic(err)
 		}
@@ -132,6 +134,9 @@ func (s *ChittyChat) Broadcast(message *proto.Response) error {
 }
 
 func (s *ChittyChat) SendMessage(message *proto.Response, stream proto.ChittyChat_JoinServer) error {
+	s.increaseClock()
+	message.Count = s.count
+	log.Printf("sent message: %s at lamport time %d", message.Text, s.count)
 	err := stream.Send(message)
 	if err != nil {
 		panic(err)
@@ -151,18 +156,13 @@ func (s *ChittyChat) setStream(name string, stream proto.ChittyChat_JoinServer) 
 	s.streams[name] = stream
 }
 
-func (me *ChittyChat) updateClockToResponse(reponse proto.Response) {
-	if me.count < reponse.Count {
-		me.count = reponse.Count
+func (s *ChittyChat) updateClock(reponseTime uint64) {
+	if s.count < reponseTime {
+		s.count = reponseTime
 	}
+	s.increaseClock()
 }
 
-func (me *ChittyChat) updateClockToClient(client proto.Client) {
-	if me.count < client.Count {
-		me.count = client.Count
-	}
-}
-
-func (me *ChittyChat) increaseClock() {
-	me.count++
+func (s *ChittyChat) increaseClock() {
+	s.count++
 }

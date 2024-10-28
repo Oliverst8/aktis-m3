@@ -75,8 +75,9 @@ func listeningForMessage(stream grpc.ServerStreamingClient[proto.Response]) {
 		if response.Count > me.Count {
 			me.Count = response.Count
 		}
-		increaseClock()
 
+		updateClock(response.Count)
+		increaseClock()
 		fmt.Printf("%d - %s:\n", response.Count, response.Client)
 		fmt.Println(response.Text)
 	}
@@ -84,4 +85,10 @@ func listeningForMessage(stream grpc.ServerStreamingClient[proto.Response]) {
 
 func increaseClock() {
 	me.Count++
+}
+
+func updateClock(time uint64) {
+	if time > me.Count {
+		me.Count = time
+	}
 }
