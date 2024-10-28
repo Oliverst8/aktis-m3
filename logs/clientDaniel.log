@@ -1,16 +1,17 @@
 > go run client/client.go daniel
-4 - daniel:
-Participant daniel joined Chitty-Chat at Lamport time 2
-8 - effe:
-Participant effe joined Chitty-Chat at Lamport time 6
-Hey you
-14 - daniel:
-Hey you
-18 - effe:
-Hello!
-23 - kurt:
-Participant kurt joined Chitty-Chat at Lamport time 21
-31 - kurt:
-Hi guys!
-37 - effe:
-Hello!
+  4 - daniel:
+  Participant daniel joined Chitty-Chat at Lamport time 2
+  7 - kurt:
+  Participant kurt joined Chitty-Chat at Lamport time 5
+  Hey!
+  11 - daniel:
+  Hey!
+  16 - kurt:
+  Whats up
+  20 - effe:
+  Participant effe joined Chitty-Chat at Lamport time 18
+  26 - effe:
+  Hey guys!
+  31 - kurt:
+  Hi!
+  leave

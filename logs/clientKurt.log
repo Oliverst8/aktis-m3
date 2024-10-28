@@ -1,8 +1,24 @@
 > go run client/client.go kurt
-25 - kurt:
-Participant kurt joined Chitty-Chat at Lamport time 21
-Hi guys!
-30 - kurt:
-Hi guys!
-39 - effe:
-Hello!
+  8 - kurt:
+  Participant kurt joined Chitty-Chat at Lamport time 5
+  12 - daniel:
+  Hey!
+  Whats up
+  17 - kurt:
+  Whats up
+  21 - effe:
+  Participant effe joined Chitty-Chat at Lamport time 18
+  27 - effe:
+  Hey guys!
+  Hi!
+  32 - kurt:
+  Hi!
+  36 - daniel:
+  daniel has left the chat at lamport time 34.
+  41 - effe:
+  Have to go as well
+  46 - effe:
+  effe has left the chat at lamport time 44.
+  leave
+  49 - kurt:
+  kurt has left the chat at lamport time 48.

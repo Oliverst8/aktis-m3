@@ -66,6 +66,7 @@ func (s *ChittyChat) Join(client *proto.Client, stream proto.ChittyChat_JoinServ
 		Client: client.Name,
 		Count:  s.count,
 	}
+	s.increaseClock()
 	err := s.Broadcast(&message)
 	if err != nil {
 		return err
@@ -77,27 +78,14 @@ func (s *ChittyChat) Join(client *proto.Client, stream proto.ChittyChat_JoinServ
 }
 
 func (s *ChittyChat) Leave(ctx context.Context, client *proto.Client) (*proto.Empty, error) {
-
-	stream := s.streams[client.Name]
-
 	s.updateClock(client.Count)
 	s.increaseClock()
-
-	youLeftMessage := proto.Response{
-		Text:   "You left",
-		Client: client.Name,
-		Count:  s.count,
-	}
 	broadcastMessage := proto.Response{
-		Text:   fmt.Sprintf("%s has left the chat.", client.Name),
+		Text:   fmt.Sprintf("%s has left the chat at lamport time %d.", client.Name, s.count),
 		Client: client.Name,
 		Count:  s.count,
 	}
-	err := s.SendMessage(&youLeftMessage, stream)
-	if err != nil {
-		return nil, err
-	}
-	err = s.Broadcast(&broadcastMessage)
+	err := s.Broadcast(&broadcastMessage)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +95,10 @@ func (s *ChittyChat) Leave(ctx context.Context, client *proto.Client) (*proto.Em
 
 func (s *ChittyChat) PublishMessage(ctx context.Context, message *proto.Response) (*proto.Status, error) {
 	s.updateClock(message.Count)
-
+	s.increaseClock()
+	if len(message.Text) > 128 {
+		return &proto.Status{Success: false}, nil
+	}
 	log.Printf("User %s publishes message \"%s\" at client Lamport time: %d, received at server lamport time: %d", message.Client, message.Text, message.Count, s.count)
 	err := s.Broadcast(message)
 	if err != nil {
@@ -117,7 +108,6 @@ func (s *ChittyChat) PublishMessage(ctx context.Context, message *proto.Response
 }
 
 func (s *ChittyChat) Broadcast(message *proto.Response) error {
-	s.increaseClock()
 	log.Printf("Broadcasting message at Lamport time %d: %s", s.count, message.Text)
 	lock.Lock()
 	for _, stream := range s.streams {
@@ -160,7 +150,6 @@ func (s *ChittyChat) updateClock(reponseTime uint64) {
 	if s.count < reponseTime {
 		s.count = reponseTime
 	}
-	s.increaseClock()
 }
 
 func (s *ChittyChat) increaseClock() {

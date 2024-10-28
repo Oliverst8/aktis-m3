@@ -1,35 +1,48 @@
 > go run server/server.go
-Now listening on localhost:5050
-2024/10/28 17:36:15 daniel is trying to join at Lamport time 2
-2024/10/28 17:36:15 Broadcasting message at Lamport time 3: Participant daniel joined Chitty-Chat at Lamport time 2
-2024/10/28 17:36:15 sent message: Participant daniel joined Chitty-Chat at Lamport time 2 at lamport time 4
-2024/10/28 17:36:15 daniel has successfully joined the chat
-2024/10/28 17:36:18 effe is trying to join at Lamport time 6
-2024/10/28 17:36:18 Broadcasting message at Lamport time 7: Participant effe joined Chitty-Chat at Lamport time 6
-2024/10/28 17:36:18 sent message: Participant effe joined Chitty-Chat at Lamport time 6 at lamport time 8
-2024/10/28 17:36:18 sent message: Participant effe joined Chitty-Chat at Lamport time 6 at lamport time 9
-2024/10/28 17:36:18 effe has successfully joined the chat
-2024/10/28 17:36:30 User daniel publishes message "Hey you" at client Lamport time: 10, received at server lamport time: 11
-2024/10/28 17:36:30 Broadcasting message at Lamport time 12: Hey you
-2024/10/28 17:36:30 sent message: Hey you at lamport time 13
-2024/10/28 17:36:30 sent message: Hey you at lamport time 14
-2024/10/28 17:36:40 User effe publishes message "Hello!" at client Lamport time: 15, received at server lamport time: 16
-2024/10/28 17:36:40 Broadcasting message at Lamport time 17: Hello!
-2024/10/28 17:36:40 sent message: Hello! at lamport time 18
-2024/10/28 17:36:40 sent message: Hello! at lamport time 19
-2024/10/28 17:37:11 kurt is trying to join at Lamport time 21
-2024/10/28 17:37:11 Broadcasting message at Lamport time 22: Participant kurt joined Chitty-Chat at Lamport time 21
-2024/10/28 17:37:11 sent message: Participant kurt joined Chitty-Chat at Lamport time 21 at lamport time 23
-2024/10/28 17:37:11 sent message: Participant kurt joined Chitty-Chat at Lamport time 21 at lamport time 24
-2024/10/28 17:37:11 sent message: Participant kurt joined Chitty-Chat at Lamport time 21 at lamport time 25
-2024/10/28 17:37:11 kurt has successfully joined the chat
-2024/10/28 17:37:38 User kurt publishes message "Hi guys!" at client Lamport time: 27, received at server lamport time: 28
-2024/10/28 17:37:38 Broadcasting message at Lamport time 29: Hi guys!
-2024/10/28 17:37:38 sent message: Hi guys! at lamport time 30
-2024/10/28 17:37:38 sent message: Hi guys! at lamport time 31
-2024/10/28 17:37:38 sent message: Hi guys! at lamport time 32
-2024/10/28 17:37:46 User effe publishes message "Hello!" at client Lamport time: 34, received at server lamport time: 35
-2024/10/28 17:37:46 Broadcasting message at Lamport time 36: Hello!
-2024/10/28 17:37:46 sent message: Hello! at lamport time 37
-2024/10/28 17:37:46 sent message: Hello! at lamport time 38
-2024/10/28 17:37:46 sent message: Hello! at lamport time 39
+  Now listening on localhost:5050
+  2024/10/28 18:39:57 daniel is trying to join at Lamport time 2
+  2024/10/28 18:39:57 Broadcasting message at Lamport time 3: Participant daniel joined Chitty-Chat at Lamport time 2
+  2024/10/28 18:39:57 sent message: Participant daniel joined Chitty-Chat at Lamport time 2 at lamport time 4
+  2024/10/28 18:39:57 daniel has successfully joined the chat
+  2024/10/28 18:39:59 kurt is trying to join at Lamport time 5
+  2024/10/28 18:39:59 Broadcasting message at Lamport time 6: Participant kurt joined Chitty-Chat at Lamport time 5
+  2024/10/28 18:39:59 sent message: Participant kurt joined Chitty-Chat at Lamport time 5 at lamport time 7
+  2024/10/28 18:39:59 sent message: Participant kurt joined Chitty-Chat at Lamport time 5 at lamport time 8
+  2024/10/28 18:39:59 kurt has successfully joined the chat
+  2024/10/28 18:40:01 User daniel publishes message "Hey!" at client Lamport time: 9, received at server lamport time: 10
+  2024/10/28 18:40:01 Broadcasting message at Lamport time 10: Hey!
+  2024/10/28 18:40:01 sent message: Hey! at lamport time 11
+  2024/10/28 18:40:01 sent message: Hey! at lamport time 12
+  2024/10/28 18:40:06 User kurt publishes message "Whats up" at client Lamport time: 14, received at server lamport time: 15
+  2024/10/28 18:40:06 Broadcasting message at Lamport time 15: Whats up
+  2024/10/28 18:40:06 sent message: Whats up at lamport time 16
+  2024/10/28 18:40:06 sent message: Whats up at lamport time 17
+  2024/10/28 18:40:27 effe is trying to join at Lamport time 18
+  2024/10/28 18:40:27 Broadcasting message at Lamport time 19: Participant effe joined Chitty-Chat at Lamport time 18
+  2024/10/28 18:40:27 sent message: Participant effe joined Chitty-Chat at Lamport time 18 at lamport time 20
+  2024/10/28 18:40:27 sent message: Participant effe joined Chitty-Chat at Lamport time 18 at lamport time 21
+  2024/10/28 18:40:27 sent message: Participant effe joined Chitty-Chat at Lamport time 18 at lamport time 22
+  2024/10/28 18:40:27 effe has successfully joined the chat
+  2024/10/28 18:40:32 User effe publishes message "Hey guys!" at client Lamport time: 24, received at server lamport time: 25
+  2024/10/28 18:40:32 Broadcasting message at Lamport time 25: Hey guys!
+  2024/10/28 18:40:32 sent message: Hey guys! at lamport time 26
+  2024/10/28 18:40:32 sent message: Hey guys! at lamport time 27
+  2024/10/28 18:40:32 sent message: Hey guys! at lamport time 28
+  2024/10/28 18:40:36 User kurt publishes message "Hi!" at client Lamport time: 29, received at server lamport time: 30
+  2024/10/28 18:40:36 Broadcasting message at Lamport time 30: Hi!
+  2024/10/28 18:40:36 sent message: Hi! at lamport time 31
+  2024/10/28 18:40:36 sent message: Hi! at lamport time 32
+  2024/10/28 18:40:36 sent message: Hi! at lamport time 33
+  2024/10/28 18:40:41 Broadcasting message at Lamport time 34: daniel has left the chat at lamport time 34.
+  2024/10/28 18:40:41 sent message: daniel has left the chat at lamport time 34. at lamport time 35
+  2024/10/28 18:40:41 sent message: daniel has left the chat at lamport time 34. at lamport time 36
+  2024/10/28 18:40:41 sent message: daniel has left the chat at lamport time 34. at lamport time 37
+  2024/10/28 18:40:47 User effe publishes message "Have to go as well" at client Lamport time: 39, received at server lamport time: 40
+  2024/10/28 18:40:47 Broadcasting message at Lamport time 40: Have to go as well
+  2024/10/28 18:40:47 sent message: Have to go as well at lamport time 41
+  2024/10/28 18:40:47 sent message: Have to go as well at lamport time 42
+  2024/10/28 18:40:49 Broadcasting message at Lamport time 44: effe has left the chat at lamport time 44.
+  2024/10/28 18:40:49 sent message: effe has left the chat at lamport time 44. at lamport time 45
+  2024/10/28 18:40:49 sent message: effe has left the chat at lamport time 44. at lamport time 46
+  2024/10/28 18:40:51 Broadcasting message at Lamport time 48: kurt has left the chat at lamport time 48.
+  2024/10/28 18:40:51 sent message: kurt has left the chat at lamport time 48. at lamport time 49

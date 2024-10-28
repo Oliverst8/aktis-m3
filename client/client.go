@@ -34,7 +34,7 @@ func main() {
 		Name:  name,
 		Count: 0,
 	}
-
+	increaseClock()
 	stream, err := client.Join(context.Background(), &me)
 
 	go listeningForMessage(stream)
@@ -54,9 +54,12 @@ func main() {
 			Client: me.Name,
 			Count:  me.Count,
 		}
-		_, err := client.PublishMessage(context.Background(), &message)
+		status, err := client.PublishMessage(context.Background(), &message)
 		if err != nil {
 			panic(err)
+		}
+		if status.Success != true {
+			fmt.Printf("Error sending message\n")
 		}
 	}
 }
@@ -70,10 +73,6 @@ func listeningForMessage(stream grpc.ServerStreamingClient[proto.Response]) {
 		}
 		if response.Err != "" {
 			panic(response.Err)
-		}
-
-		if response.Count > me.Count {
-			me.Count = response.Count
 		}
 
 		updateClock(response.Count)

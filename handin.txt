@@ -1,0 +1,30 @@
+2. Discuss, whether you are going to use server-side streaming, client-side streaming, or bidirectional streaming?
+We are going to use service-side streaming, where we are just going to stream messages to the client. To get messages to the server we are not going to stream them.
+
+3. Describe your system architecture - do you have a server-client architecture, peer-to-peer, or something else?
+We are going to use a server-client architecture, where every client send message to the server, and then the server handles giving the messages to all of the clients
+
+4. Describe what RPC methods are implemented, of what type, and what messages types are used for communication
+The following RPC methods are implemented: PublishMessage, Join, Leave.
+Three types of messages are used: Response, Status, Client.
+The RPC methods are imlemented by the server, and can be used by the client, to publish messages in the chatroom, join, and leave the chatroom.
+The Response message is used to deliver chat messages to the server, and distribute them to the other clients.
+PublishMessage responds with a Status so a client can know whether their message was published.
+The Client message is used to transfer information about a Client when they join a server.
+
+5. Describe how you have implemented the calculation of the Lamport timestamp
+Each client keeps track of their own Lamport time. When they send messages, they increment their time. When they recieve messages, they update their time accordingly.
+The server keeps track of its lamport time. When the server receives a message, it updates its Lamport time to match the time recieved.
+Every time the server takes significant action, such as logging an event, it increments its Lamport time. All messages going out of the sever have the servers time attached.
+
+6. Provide a diagram, that traces a sequence of RPC calls together with the Lamport timestamps, that corresponds to a chosen sequence of interactions: Client X joins, Client X Publishes, ..., Client X leaves. Include documentation (system logs) in your appendix.
+
+7. Provide a link to a Git repo with your source code in the report
+https://github.com/Oliverst8/aktis-m3
+The coding is done with Code With Me, so ignore that all commits are done by mostly the same person
+
+8. Include system logs, that document the requirements are met, in the appendix of your report
+
+
+9. Include a readme.md file that describes how to run your program.
+DONE
