@@ -1,0 +1,15 @@
+> go run client/client.go effe
+9 - effe:
+Participant effe joined Chitty-Chat at Lamport time 6
+13 - daniel:
+Hey you
+Hello!
+19 - effe:
+Hello!
+24 - kurt:
+Participant kurt joined Chitty-Chat at Lamport time 21
+32 - kurt:
+Hi guys!
+Hello!
+38 - effe:
+Hello!

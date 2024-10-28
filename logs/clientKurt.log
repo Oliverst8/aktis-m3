@@ -1,0 +1,8 @@
+> go run client/client.go kurt
+25 - kurt:
+Participant kurt joined Chitty-Chat at Lamport time 21
+Hi guys!
+30 - kurt:
+Hi guys!
+39 - effe:
+Hello!
